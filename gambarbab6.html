@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Gambar bab 6</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Gambarbab6</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian EPS-TOPIK - 12 Soal</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --light: #f4f7f6;
+            --active-border: #8e44ad; /* Warna Ungu */
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--light);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #quiz-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        #main-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        @media (max-width: 800px) {
+            #main-container { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        #timer { font-size: 1.5rem; font-weight: bold; color: var(--danger); }
+
+        .question-text { font-size: 1.2rem; margin-bottom: 20px; line-height: 1.6; }
+
+        .options-container { display: grid; gap: 10px; }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+
+        .option.selected { background-color: #e1f5fe; border-color: var(--accent); }
+        .correct-ans { border-color: var(--accent) !important; background-color: #e1f5fe !important; font-weight: bold; }
+        .wrong-ans { border-color: var(--danger) !important; background-color: #fdeaea !important; color: var(--danger); }
+
+        /* Navigation Grid */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        /* Border Ungu Tebal untuk nomor yang sedang dikerjakan */
+        .nav-item.active { 
+            border: 4px solid var(--active-border) !important; 
+            transform: scale(1.05);
+            z-index: 2;
+        }
+
+        .nav-item.filled { background-color: #d1d8e0; }
+        
+        /* Nav colors after submit */
+        .nav-correct { background-color: var(--accent) !important; color: white; border-color: var(--accent); }
+        .nav-wrong { background-color: var(--warning) !important; color: black; border-color: var(--warning); }
+
+        .controls { display: flex; justify-content: space-between; margin-top: 20px; }
+        
+        button {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-prev { background: #95a5a6; color: white; }
+        .btn-next { background: var(--accent); color: white; }
+        .btn-submit { background: var(--success); color: white; width: 100%; margin-top: 10px; font-size: 1.1rem; }
+        button:disabled { opacity: 0.3; }
+
+        u { text-underline-offset: 4px; text-decoration-thickness: 2px; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-wrapper">
+    <div class="card" style="text-align: center;">
+        <div id="timer">10:00</div>
+    </div>
+
+    <div id="main-container">
+        <div class="card">
+            <div class="header">
+                <span id="q-label" style="font-weight:bold; color:var(--primary);">Soal</span>
+            </div>
+            <div id="q-text" class="question-text"></div>
+            <div id="options-box" class="options-container"></div>
+            
+            <div class="controls">
+                <button class="btn-prev" id="prev-btn" onclick="move(-1)">Sebelumnya</button>
+                <button class="btn-next" id="next-btn" onclick="move(1)">Berikutnya</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0; font-size: 1rem;">Navigasi Soal</h3>
+            <div class="nav-grid" id="nav-grid"></div>
+            <button class="btn-submit" id="submit-btn" onclick="finish()">SUBMIT</button>
+            <div id="result-box" style="margin-top: 15px; font-weight: bold; text-align: center;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rawData = [
+{ q: "1.jpg", a: ["일어나다", "씻다", "이를 닦다", "식사하다"], c: 0 },
+{ q: "2.jpg", a: ["일어나다", "씻다", "이를 닦다", "식사하다"], c: 1 },
+{ q: "3.jpg", a: ["일어나다", "씻다", "이를 닦다", "식사하다"], c: 2 },
+{ q: "4.jpg", a: ["일어나다", "씻다", "이를 닦다", "식사하다"], c: 3 },
+{ q: "5.jpg", a: ["출근하다", "퇴근하다", "청소하다", "산책하다"], c: 0 },
+{ q: "6.jpg", a: ["출근하다", "퇴근하다", "청소하다", "산책하다"], c: 1 },
+{ q: "7.jpg", a: ["게임하다", "장을 보다", "샤워하다", "친구를 만나다"], c: 0 },
+{ q: "8.jpg", a: ["출근하다", "퇴근하다", "청소하다", "산책하다"], c: 2 },
+{ q: "9.jpg", a: ["게임하다", "장을 보다", "샤워하다", "친구를 만나다"], c: 1 },
+{ q: "10.jpg", a: ["출근하다", "퇴근하다", "청소하다", "산책하다"], c: 3 },
+{ q: "11.jpg", a: ["게임하다", "장을 보다", "샤워하다", "친구를 만나다"], c: 2 },
+{ q: "12.jpg", a: ["게임하다", "장을 보다", "샤워하다", "친구를 만나다"], c: 3 }
+];
+
+    let questions = [];
+    let userAnswers = new Array(rawData.length).fill(null);
+    let currentIdx = 0;
+    let isSubmitted = false;
+    let timerValue = 10 * 60;
+
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function init() {
+        questions = shuffle([...rawData]).map(item => {
+            const options = item.a.map((txt, i) => ({ text: txt, correct: i === item.c }));
+            return { q: item.q, options: shuffle(options) };
+        });
+        
+        renderNav();
+        renderQuestion();
+        startTimer();
+    }
+
+    function renderNav() {
+        const nav = document.getElementById('nav-grid');
+        nav.innerHTML = '';
+        questions.forEach((_, i) => {
+            const item = document.createElement('div');
+            item.className = 'nav-item';
+            item.innerText = i + 1;
+            
+            if (i === currentIdx) item.classList.add('active');
+            if (userAnswers[i] !== null) item.classList.add('filled');
+            
+            if (isSubmitted) {
+                const isCorrect = userAnswers[i] !== null && questions[i].options[userAnswers[i]].correct;
+                item.classList.add(isCorrect ? 'nav-correct' : 'nav-wrong');
+            }
+
+            item.onclick = () => { currentIdx = i; renderQuestion(); renderNav(); };
+            nav.appendChild(item);
+        });
+    }
+
+    function renderQuestion() {
+        const q = questions[currentIdx];
+        document.getElementById('q-label').innerText = `Soal Nomor ${currentIdx + 1}`;
+        const isImage = q.q.includes('.jpg');
+
+if (isImage) {
+    document.getElementById('q-text').innerHTML =
+        `<img src="assets/img/${q.q}" style="max-width:100%; border-radius:10px;">`;
+} else {
+    document.getElementById('q-text').innerHTML = q.q;
+}
+        const box = document.getElementById('options-box');
+        box.innerHTML = '';
+
+        q.options.forEach((opt, i) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            if (userAnswers[currentIdx] === i) div.classList.add('selected');
+
+            if (isSubmitted) {
+                if (opt.correct) div.classList.add('correct-ans');
+                else if (userAnswers[currentIdx] === i) div.classList.add('wrong-ans');
+            } else {
+                div.onclick = () => { 
+                    userAnswers[currentIdx] = i; 
+                    renderQuestion(); 
+                    renderNav();
+                };
+            }
+
+            const symbols = ['①', '②', '③', '④'];
+            div.innerHTML = `${symbols[i]} ${opt.text}`;
+            box.appendChild(div);
+        });
+
+        document.getElementById('prev-btn').disabled = (currentIdx === 0);
+        document.getElementById('next-btn').disabled = (currentIdx === rawData.length - 1);
+    }
+
+    function move(step) {
+        currentIdx += step;
+        renderQuestion();
+        renderNav();
+    }
+
+    function startTimer() {
+        const timerEl = document.getElementById('timer');
+        const interval = setInterval(() => {
+            if (isSubmitted) { clearInterval(interval); return; }
+            let m = Math.floor(timerValue / 60);
+            let s = timerValue % 60;
+            timerEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if (timerValue <= 0) { clearInterval(interval); finish(); }
+            timerValue--;
+        }, 1000);
+    }
+
+    function finish() {
+        if (isSubmitted) return;
+        if (timerValue > 0 && !confirm("Apakah Anda yakin ingin mensubmit semua jawaban?")) return;
+
+        isSubmitted = true;
+        let correctCount = 0;
+        questions.forEach((q, idx) => {
+            if (userAnswers[idx] !== null && q.options[userAnswers[idx]].correct) correctCount++;
+        });
+
+        const percent = ((correctCount / rawData.length) * 100).toFixed(1);
+        
+        document.getElementById('result-box').innerHTML = `
+            <div style="color:var(--primary); font-size:1.2rem;">Skor Akhir:</div>
+            <div style="font-size:2rem; color:var(--success);">${correctCount} / 12</div>
+            <div style="font-size:1.5rem;">(${percent}%)</div>
+        `;
+
+        document.getElementById('submit-btn').disabled = true;
+        renderQuestion();
+        renderNav();
+    }
+
+    init();
+</script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
